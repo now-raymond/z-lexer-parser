@@ -19,12 +19,175 @@ terminal BOOLEAN;
 terminal INT, RAT, CHAR, FLOAT;
 terminal LBRACK, RBRACK; // array types
 terminal DOT; // qualified_name
-terminal SEMICOLON, MULT, COMMA, LBRACE, RBRACE, EQ, LPAREN, RPAREN, COLON; 
+terminal SEMICOLON, COMMA, LBRACE, RBRACE, EQ, LPAREN, RPAREN, COLON; 
+terminal LANGLE, RANGLE; // seq types <>
 terminal IF, ELSE; // if_then_statement, if_then_else_statement
 terminal LOOP; // loop_statement
 terminal BREAK; // break_statement
 terminal RETURN; // return_statement
-terminal PLUS, MINUS, DIV, MOD, MULT, POF; //numeric operators
+terminal PLUS, MINUS, DIV, MULT, POF; //numeric operators
 terminal LT, GT, LTEQ, GTEQ;
-terminal ANDAND; // Conditional expression
-terminal OROR; // Conditional expression
+terminal AND; // Conditional expression
+terminal OR; // Conditional expression
+terminal IMPLIES;
+terminal IN; // Dictionary and seq in
+terminal CONCAT; // concat for dictionaries
+terminal DEFINE_FUNCTION, DEFINE_TYPE; // fdef, tdef
+terminal SEQ;
+terminal DICT; // dict
+
+terminal java.lang.Number INTEGER_LITERAL;
+terminal java.lang.Number FLOATING_POINT_LITERAL;
+terminal java.lang.Boolean BOOLEAN_LITERAL;
+terminal java.lang.Character CHARACTER_LITERAL;
+terminal java.lang.String STRING_LITERAL;
+terminal java.lang.String IDENTIFIER;
+
+/* non-terminals */
+// The Syntactic Grammar
+non terminal goal;
+// Lexical Structure
+non terminal literal;
+// Types,values and variables
+non terminal type, primitive_type, numeric_type;
+non terminal integral_type, floating_point_type, rational_type;
+non terminal reference_type;
+non terminal sequence_type;
+// Names
+non terminal name, simple_name, qualified_name; 
+// Field Declerations
+non terminal variable_declerators, variable_declerator;
+non terminal variable_declerator_id, variable_initializer;
+// Method Declarations
+non terminal type_opt; // Optional type for fdef
+non terminal method_declaration, method_header, method_declarator;
+non terminal formal_parameter_list_opt, formal_parameter_list;
+non terminal formal_parameter;
+non terminal method_body;
+// Structure Declarations
+non terminal struct_declaration;
+non terminal struct_body;
+non terminal struct_declarations_opt, struct_declarations;
+non terminal struct_body_declaration, struct_member_declaration;
+
+
+// 1.0) Types, values and variables  
+type ::=  primitive_type
+  | reference_type
+  ;  
+primitive_type ::=
+    numeric_type
+  | BOOLEAN
+  ;
+numeric_type::= integral_type
+  | floating_point_type
+  | rational_type
+  ;
+integral_type ::= 
+    INT 
+  | CHAR 
+  ;
+floating_point_type ::= 
+  FLOAT 
+  ;
+rational_type ::=
+  RAT
+  ;
+reference_type ::=
+    sequence_type
+  | struct_type
+  ;
+sequence_type ::=
+  SEQ LANGLE primitive_type RANGLE
+  ;
+struct_type ::=
+  DEFINE_TYPE 
+  ;
+dict_type ::= 
+  DICT LANGLE type COMMA type RANGLE 
+  ;
+
+// 2.0) Names
+name  ::= simple_name
+  | qualified_name
+  ;
+simple_name ::= IDENTIFIER
+  ;
+qualified_name ::=
+    name DOT IDENTIFIER
+  ;
+
+
+// 3.0) Field Declerations Defition
+field_declaration ::= 
+    IDENTIFIER COLON variable_declarator SEMICOLON
+  ;
+variable_declarator ::=
+    type EQ variable_initializer
+  ;
+
+
+// 4.0) Method Decleration Definition
+method_declaration ::=
+    method_header method_body
+  ;
+method_header ::=
+    DEFINE_FUNCTION method_declarator
+  ;
+method_declarator ::=
+    IDENTIFIER LPAREN formal_parameter_list_opt RPAREN
+  | LPAREN formal_parameter_list_opt RPAREN
+  ;
+formal_parameter_list_opt ::=
+  | formal_parameter_list
+  ;
+formal_parameter_list ::=
+    formal_parameter
+  | formal_parameter_list COMMA formal_parameter
+  ;
+formal_parameter ::=
+     IDENTIFIER COLON type
+  ;
+method_body ::=
+    block // TODO :: STATEMENTS
+  | SEMICOLON
+  ;
+
+
+// 5.0) Structure 
+// 5.0.1) Structure Declaration:
+struct_decleration ::=
+  DEFINE_TYPE IDENTIFIER struct_body SEMICOLON
+  ;
+struct_body ::=
+  LBRACE struct_body_declarations_opt RBRACE
+  ;
+struct_body_declaration_opt ::=
+  | struct_body_declarations
+  ;
+struct_body_declarations ::=
+    struct_body_declaration
+  | struct_body_declarations COMMA struct_body_declaration
+  ;
+struct_body_declaration ::=
+    IDENTIFIER COLON type
+  | IDENTIFIER COLON IDENTIFIER // Unsure, to be tested
+  ;
+
+
+
+
+
+
+
+
+// TODO: 
+// ALIAS - etc. alias seq<char> string;
+
+// Structure field Declaration:
+
+
+
+
+
+
