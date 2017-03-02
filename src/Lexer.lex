@@ -152,7 +152,7 @@ SingleCharacter = [^\r\n\'\\]
   // TODO: appropriately handle the type instead of casting to Integer
   {RationalLiteral}				 { return symbol(sym.RATIONAL_LITERAL, new Integer(yytext())); }
   
-  {FloatLiteral}                 { return symbol(sym.FLOATING_POINT_LITERAL, new Float(yytext().substring(0,yylength()-1))); }
+  {FloatLiteral}                 { return symbol(sym.FLOAT_LITERAL, new Float(yytext().substring(0,yylength()-1))); }
   
   /* comments */
   {Comment}                      { /* ignore */ }
