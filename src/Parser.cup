@@ -1,0 +1,30 @@
+import java_cup.runtime.*;
+
+parser code  {: 
+  public void syntax_error(Symbol current_token) {
+    report_error(
+    "Syntax error at line " + (current_token.left+1) + ", column "
+    + current_token.right, null
+    );
+  }
+   
+  // public void report_fatal_error(String message, Object info) {
+  //   report_error(message, info);
+  //   throw new RuntimeException("Fatal Syntax Error");
+  // }
+:};
+
+/* Terminals */
+terminal BOOLEAN;
+terminal INT, RAT, CHAR, FLOAT;
+terminal LBRACK, RBRACK; // array types
+terminal DOT; // qualified_name
+terminal SEMICOLON, MULT, COMMA, LBRACE, RBRACE, EQ, LPAREN, RPAREN, COLON; 
+terminal IF, ELSE; // if_then_statement, if_then_else_statement
+terminal LOOP; // loop_statement
+terminal BREAK; // break_statement
+terminal RETURN; // return_statement
+terminal PLUS, MINUS, DIV, MOD, MULT, POF; //numeric operators
+terminal LT, GT, LTEQ, GTEQ;
+terminal ANDAND; // Conditional expression
+terminal OROR; // Conditional expression
