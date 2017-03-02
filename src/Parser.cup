@@ -7,11 +7,6 @@ parser code  {:
     + current_token.right, null
     );
   }
-   
-  // public void report_fatal_error(String message, Object info) {
-  //   report_error(message, info);
-  //   throw new RuntimeException("Fatal Syntax Error");
-  // }
 :};
 
 /* Terminals */
@@ -56,8 +51,8 @@ non terminal sequence_type;
 // Names
 non terminal name, simple_name, qualified_name; 
 // Field Declerations
-non terminal variable_declerators, variable_declerator;
-non terminal variable_declerator_id, variable_initializer;
+non terminal variable_declarators, variable_declarator;
+non terminal variable_declarator_id, variable_initializer;
 // Method Declarations
 non terminal type_opt; // Optional type for fdef
 non terminal method_declaration, method_header, method_declarator;
@@ -65,10 +60,17 @@ non terminal formal_parameter_list_opt, formal_parameter_list;
 non terminal formal_parameter;
 non terminal method_body;
 // Structure Declarations
+non terminal struct_type;
 non terminal struct_declaration;
 non terminal struct_body;
+non terminal struct_body_declarations_opt, struct_body_declaration_opt;
 non terminal struct_declarations_opt, struct_declarations;
-non terminal struct_body_declaration, struct_member_declaration;
+non terminal struct_body_declaration, struct_body_declarations, struct_member_declaration;
+// Dictionary Declarations
+non terminal dict_type;
+non terminal field_declaration;
+// Block
+non terminal block;
 
 
 // 1.0) Types, values and variables  
@@ -156,7 +158,7 @@ method_body ::=
 
 // 5.0) Structure 
 // 5.0.1) Structure Declaration:
-struct_decleration ::=
+struct_declaration ::=
   DEFINE_TYPE IDENTIFIER struct_body SEMICOLON
   ;
 struct_body ::=
@@ -173,8 +175,6 @@ struct_body_declaration ::=
     IDENTIFIER COLON type
   | IDENTIFIER COLON IDENTIFIER // Unsure, to be tested
   ;
-
-
 
 
 
