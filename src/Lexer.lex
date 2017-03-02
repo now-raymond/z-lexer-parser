@@ -78,17 +78,18 @@ SingleCharacter = [^\r\n\'\\]
   "return"                       { return symbol(sym.RETURN); }
   
   // Type definitions
+  "fdef"                         { return symbol(sym.DEFINE_FUNCTION); }
   "tdef"                         { return symbol(sym.DEFINE_TYPE); }
   "alias"                        { return symbol(sym.ALIAS); }
   
   // Data types
-  "fdef"                         { return symbol(sym.DEFINE_FUNCTION); }
   "bool"                         { return symbol(sym.BOOLEAN); }
   "char"                         { return symbol(sym.CHAR); }
-  "float"                        { return symbol(sym.FLOAT); }
   "int"                          { return symbol(sym.INT); }
-  "dict"                         { return symbol(sym.DICT); }
+  "rat"                          { return symbol(sym.RAT); }
+  "float"                        { return symbol(sym.FLOAT); }
   "seq"                          { return symbol(sym.SEQ); }
+  "dict"                         { return symbol(sym.DICT); }
   
   // Input-Output
   "read"                         { return symbol(sym.READ); }
@@ -116,21 +117,26 @@ SingleCharacter = [^\r\n\'\\]
   "."                            { return symbol(sym.DOT); }
   
   /* operators */
+  // Boolean operators
   "!"                            { return symbol(sym.NOT); }
   "&&"                           { return symbol(sym.AND); }
   "||"                           { return symbol(sym.OR); }
   "=>"                           { return symbol(sym.IMPLIES); }
+  
+  // Numeric operators
+  "="                            { return symbol(sym.EQEQ); }
+  "<="                           { return symbol(sym.LTEQ); }
   
   "+"                            { return symbol(sym.PLUS); }
   "-"                            { return symbol(sym.MINUS); }
   "*"                            { return symbol(sym.MULT); }
   "/"                            { return symbol(sym.DIV); }
   "^"                            { return symbol(sym.POF); }	// Power-of
-  "::"                           { return symbol(sym.CONCAT); }
   
   ":="                           { return symbol(sym.EQ); }
-  
   "in"                           { return symbol(sym.IN); }
+  "::"                           { return symbol(sym.CONCAT); }
+  "?"                            { return symbol(sym.QUESTION); }	// Function predicate
   
   /* string literal */
   \"                             { yybegin(STRING); string.setLength(0); }
