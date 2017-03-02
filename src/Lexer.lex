@@ -77,6 +77,9 @@ SingleCharacter = [^\r\n\'\\]
   "break"                        { return symbol(sym.BREAK); }
   "return"                       { return symbol(sym.RETURN); }
   
+  // Entry point
+  "main"                         { return symbol(sym.MAIN); }
+  
   // Type definitions
   "fdef"                         { return symbol(sym.DEFINE_FUNCTION); }
   "tdef"                         { return symbol(sym.DEFINE_TYPE); }
