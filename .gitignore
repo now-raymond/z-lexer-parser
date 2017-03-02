@@ -1,2 +1,10 @@
+# General
 .DS_Store
 bin/
+
+# Lexer
+src/Lexer.java*
+
+# Parser
+src/Parser.java
+src/sym.java
