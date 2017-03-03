@@ -1,0 +1,17 @@
+Compile Lexer.cup -> Lexer.java: [doLex.cmd]
+java -jar lib/jflex-1.6.1.jar -d src/ src/Lexer.lex
+
+Compile Lexer.java -> Lexer.class (executable):
+javac -cp lib/java-cup-11b-runtime.jar -sourcepath src/ -d bin/ src/Lexer.java
+
+Compile Parser.cup -> Parser.java & sym.java: [doParse.cmd]
+java -jar lib/java-cup-11b.jar -destdir src/ -parser Parser src/Parser.cup
+
+Test lexer only: [testLexer.cmd]
+java -cp bin;lib/java-cup-11b-runtime.jar Lexer tests/open/p-imply.s
+
+Run lexer+parser on a test case:
+java -cp bin;lib/java-cup-11b-runtime.jar SC tests/open/p-imply.s
+
+Run lexer+parser on a test case and print stack trace if an error occurred: [testSystem.cmd]
+java -cp bin;lib/java-cup-11b-runtime.jar SC_Verbose tests/open/p-imply.s
