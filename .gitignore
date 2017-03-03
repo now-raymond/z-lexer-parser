@@ -1,6 +1,7 @@
 # General
 .DS_Store
 bin/
+result.csv
 
 # Lexer
 src/Lexer.java*
