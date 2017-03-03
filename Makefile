@@ -26,3 +26,13 @@ clobber_csv:
 
 clean:
 	rm -rf src/Lexer.java src/Lexer.java~ src/sym.java src/Parser.java bin/*.class
+
+# Custom additions
+
+# Builds lexer only.
+lexer:
+	java -jar lib/jflex-$(VERJFLEX).jar -d src/ src/Lexer.lex
+	
+# Builds parser only.
+parser:
+	java -jar lib/java-cup-$(VERCUP).jar -destdir src/ -parser Parser src/Parser.cup
