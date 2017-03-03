@@ -36,3 +36,8 @@ lexer:
 # Builds parser only.
 parser:
 	java -jar lib/java-cup-$(VERCUP).jar -destdir src/ -parser Parser src/Parser.cup
+	
+# Builds verbose version of SC.
+v:
+	make all
+	javac -cp lib/java-cup-$(VERCUP)-runtime.jar -sourcepath src/ -d bin/ src/SC_Verbose.java
