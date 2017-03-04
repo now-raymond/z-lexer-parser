@@ -87,12 +87,12 @@ SingleCharacter = [^\r\n\'\\]
   
   // Data types
   "bool"                         { return symbol(sym.BOOLEAN); }
-  "char"                         { return symbol(sym.CHAR); }
   "int"                          { return symbol(sym.INT); }
   "rat"                          { return symbol(sym.RAT); }
   "float"                        { return symbol(sym.FLOAT); }
-  "seq"                          { return symbol(sym.SEQ); }
+  "char"                         { return symbol(sym.CHAR); }
   "dict"                         { return symbol(sym.DICT); }
+  "seq"                          { return symbol(sym.SEQ); }
   
   // Input-Output
   "read"                         { return symbol(sym.READ); }
@@ -128,6 +128,7 @@ SingleCharacter = [^\r\n\'\\]
   
   // Numeric operators
   "="                            { return symbol(sym.EQEQ); }
+  "!="                           { return symbol(sym.NOTEQ); }
   "<="                           { return symbol(sym.LTEQ); }
   
   "+"                            { return symbol(sym.PLUS); }
