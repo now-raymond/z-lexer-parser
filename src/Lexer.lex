@@ -49,7 +49,7 @@ IntegerLiteral = 0 | [1-9][0-9]*
 RationalLiteral = ([0-9]+ "_")? [0-9]+ "/" [0-9]+
     
 // Floating point literals      
-FloatLiteral  = ({FLit1}|{FLit2}|{FLit3}) {Exponent}? [fF]
+FloatLiteral  = ({FLit1}|{FLit2}|{FLit3})
 
 FLit1    = [0-9]+ \. [0-9]* 
 FLit2    = \. [0-9]+ 
