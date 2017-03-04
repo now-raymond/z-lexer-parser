@@ -59,7 +59,7 @@ terminal IMPLIES;  // =>
 
 // Numeric operators
 terminal PLUS, MINUS, MULT, DIV, POF; // +, -, *, /, ^
-terminal EQEQ, LTEQ;                  // =, <= (comparison)
+terminal EQEQ, NOTEQ, LTEQ;           // =, !=, <= (comparison)
 
 // Language constructs
 terminal EQ;                          // := (assignment)
@@ -83,92 +83,394 @@ terminal java.lang.String    IDENTIFIER;
 /* Non-terminals */
 
 // Program Structure
-nonterminal main_declaration;
+nonterminal program;
+nonterminal main_statement;
 
 // Lexical Structure.
 nonterminal literal;
 
 // Data types
-nonterminal type, primitive_type, aggregrate_type;
+nonterminal type, primitive_type, aggregrate_type, reference_type;
 nonterminal numeric_type, integral_type;
 nonterminal dict_type, seq_type;
 
+// Operators
+nonterminal operator, unary_operator, binary_operator, assignment_operator;
+
 // Blocks and Statements
 nonterminal block, block_statements_opt, block_statements, block_statement;
-nonterminal statement, statement_without_trailing_substatement; //TODO
-nonterminal empty_statement, print_statement;
+nonterminal statement, statements, statement_without_trailing_substatement;
+nonterminal empty_statement, print_statement, read_statement;
+nonterminal alias_statement;
+nonterminal variable_declaration_statement;
 
+// Control Flow Statements
+nonterminal if_then_statement, if_then_else_statement;
+nonterminal loop_statement;
+nonterminal return_statement;
+nonterminal break_statement;
+
+// Expressions
+nonterminal expression, subexpression, expression_statement, statement_expression;
+nonterminal assignment_statement;
+nonterminal left_hand_side;
+nonterminal field_access;
+nonterminal seq_access;
+nonterminal assignment_expression;  // A := B
+nonterminal conditional_expression; // A && B, A || B
+nonterminal relational_expression;  // A < B, A <= B
+nonterminal binary_expression;      // A + B, A - B, A * B, A ^ B, A in B, A :: B etc.
+nonterminal unary_expression;       // !A, -B
+//nonterminal concat_expression;      // A :: B - note, can be daisy chained i.e. A :: B :: C
+
+// Variable declaration & Initializers
+nonterminal variable_declaration, variable_initializer, variable_initializers;
+nonterminal dict_initializer, seq_initializer, primary_no_new_seq;
+nonterminal key_value_pairs, key_value_pair;
+
+// Function declaration (fdef)
+nonterminal define_function_statement;
+nonterminal function_header, function_body, function_datatype_opt;
+nonterminal formal_parameter_list_opt, formal_parameter_list, formal_parameter;
+
+// Function invocation
+nonterminal function_invocation_expression;
+nonterminal function_invocation, function_condition;
+nonterminal function_arguments_opt, function_arguments, function_argument;
+
+// Struct declaration (tdef) and alias
+nonterminal define_struct_statement, struct_body;
+nonterminal struct_fields_opt; // For empty structs with no fields
+nonterminal struct_fields, struct_field;
+nonterminal alias_declaration;
+
+// Precedence rules
+precedence left PLUS, MINUS;
+precedence left DIV, MULT;
 
 // *************************************
 // ========= PRODUCTION RULES ==========
 // *************************************
 
-start with main_declaration;
+start with program;
 
 // Program structure
-main_declaration ::= MAIN block SEMICOLON
-    ;
+main_statement ::= 
+      MAIN block SEMICOLON;
 
 // Lexical Structure.
-literal ::= INTEGER_LITERAL
+literal ::= 
+      INTEGER_LITERAL
     | FLOAT_LITERAL
     | BOOLEAN_LITERAL
     | CHARACTER_LITERAL
     | STRING_LITERAL
     | RATIONAL_LITERAL
-    | NULL_LITERAL
-    ;
+    | NULL_LITERAL;
 
 // Data types
-type ::= primitive_type
+type ::= 
+      primitive_type
     | aggregrate_type
-    ;
-primitive_type ::= numeric_type
-    | BOOLEAN
-    ;
-numeric_type ::= integral_type
-    | FLOAT
-    ;
-integral_type ::= INT
-    | CHAR
-    ; 
-aggregrate_type ::= dict_type
-    | seq_type
-    ;
-dict_type ::= DICT LANGLE type COMMA type RANGLE
-    ;
-seq_type ::= SEQ LANGLE type RANGLE
-    ;
+  	| reference_type;	// struct
 
+primitive_type ::= 
+      numeric_type
+    | BOOLEAN;
+
+numeric_type ::= 
+      integral_type
+  	| RAT
+    | FLOAT;
+
+integral_type ::= 
+      INT
+    | CHAR;
+
+aggregrate_type ::= 
+      dict_type
+    | seq_type;
+
+reference_type ::=
+      IDENTIFIER;
+
+dict_type ::= 
+      DICT LANGLE type COMMA type RANGLE;
+
+seq_type ::=
+      SEQ LANGLE type RANGLE;
+
+// Operators
+operator ::=
+  	  unary_operator
+  	| binary_operator;
+
+unary_operator ::=
+      NOT
+    | MINUS;
+
+binary_operator ::=
+      PLUS
+  	| MINUS
+  	| MULT
+	| DIV
+    | POF
+  	| AND
+  	| OR
+  	| IMPLIES
+  	| IN
+  	| CONCAT
+  	| LANGLE
+  	| EQEQ
+  	| NOTEQ
+  	| LTEQ;
+    
+assignment_operator ::=
+      EQ;
 
 // Blocks and Statements
 // General structures (i.e. building blocks for other nonterminals)
-block ::= LBRACE block_statements_opt RBRACE
-    ;
+// { ..statements.. }
+block ::= 
+      LBRACE block_statements RBRACE;
+
+// ..statements.. (zero or more)
 block_statements_opt ::= 
-    | block_statements
-    ;
-block_statements ::= block_statement
-    | block_statements block_statement
-    ; 
-block_statement ::= statement
-    ; // TODO
-statement ::= statement_without_trailing_substatement
-    ; //TODO
-statement_without_trailing_substatement ::= block
+    | block_statements;
+
+block_statements ::= 
+      block_statement
+    | block_statements block_statement;
+
+block_statement ::= 
+      statement;
+
+// TODO: add all statement types
+statement ::= 
+      statement_without_trailing_substatement
+    | if_then_statement
+    | if_then_else_statement
+    | loop_statement;
+
+program ::=
+      main_statement
+    | main_statement statements
+    | statements main_statement
+    | statements main_statement statements;
+    
+statements ::=
+	  statement
+  	| statements statement;
+
+// NOTE: Check if block should be present here or not. Block includes curly braces {}.
+// These are for "simple" statements.
+statement_without_trailing_substatement ::= 
+      block
+    | expression_statement
+    | assignment_statement
     | empty_statement
     | print_statement
-    ;
-empty_statement ::= SEMICOLON
-    ;
-print_statement ::= PRINT literal SEMICOLON
-    ;
+    | read_statement
+  	| alias_statement
+    | return_statement
+    | break_statement
+  	| define_struct_statement
+  	| define_function_statement
+    | variable_declaration_statement;
+    
+assignment_statement ::=
+      expression assignment_operator expression;
+
+// NOTE: Check if this is needed. This might mean "i:int := ;" is valid? Need to test.
+empty_statement ::= 
+      SEMICOLON;
+
+print_statement ::= 
+      PRINT expression SEMICOLON;
+
+read_statement ::= 
+      READ expression SEMICOLON;
+
+alias_statement ::=
+  	  ALIAS type IDENTIFIER SEMICOLON;
+
+variable_declaration_statement ::= 
+      variable_declaration SEMICOLON;
+
+variable_declaration ::= 
+      IDENTIFIER COLON type
+    | IDENTIFIER COLON type EQ variable_initializer;
+
+// Initializers
+variable_initializer ::=
+      expression
+    | dict_initializer
+    | seq_initializer;
+
+variable_initializers ::=
+      variable_initializer
+    | variable_initializers COMMA variable_initializer;
+
+dict_initializer ::= 
+      LBRACE RBRACE
+    | LBRACE key_value_pairs RBRACE;
+
+key_value_pairs ::=
+  	  key_value_pair
+  	| key_value_pairs COMMA key_value_pair;
+
+key_value_pair ::=
+  	  variable_initializer COLON variable_initializer;
+
+seq_initializer ::=
+  	  LBRACK RBRACK
+  	| primary_no_new_seq;
+    
+primary_no_new_seq ::=
+      LBRACK variable_initializers RBRACK;
+
+// Control Flow
+if_then_statement ::=
+      IF LPAREN expression RPAREN THEN block_statements ENDIF;
+
+if_then_else_statement ::=
+      IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
+
+loop_statement ::=
+      LOOP block_statements_opt ENDLOOP;
+
+return_statement ::=
+      RETURN expression SEMICOLON
+  	| RETURN SEMICOLON;
+
+// Break accepts an optional integer to specify number of nested loops to break out of.
+// We are making this an expression so that a variable can be evaluated for this value.
+// Type checking to ensure an integer value will have to be performed during semantic analysis.
+break_statement ::=
+      BREAK expression SEMICOLON
+  	| BREAK SEMICOLON;
 
 
+// Expressions
+expression_statement ::=
+      expression SEMICOLON;
+
+/*statement_expression ::=
+  		assignment
+    | function_invocation;*/
+
+// TODO: handle A + B + C
+expression ::=
+      expression binary_operator subexpression
+    | subexpression;
+
+subexpression ::=
+      literal
+    | IDENTIFIER
+  	| field_access
+  	| seq_access
+  	| function_invocation
+  	| unary_operator subexpression
+  	// | LPAREN expression binary_operator expression RPAREN;
+    //| expression binary_operator expression
+    | LPAREN expression RPAREN;
+
+/*assignment_expression ::=
+  		conditional_expression
+  	| assignment;
+
+assignment ::=
+  		left_hand_side EQ assignment_expression;
+
+left_hand_side ::=
+  		IDENTIFIER
+  	| field_access;*/
+
+field_access ::=
+  	  IDENTIFIER DOT IDENTIFIER;
+
+// NOTE: Identifier OR another array(seq)!
+seq_access ::=
+  	  IDENTIFIER LBRACK expression RBRACK
+  	| IDENTIFIER LBRACK expression COLON expression RBRACK
+  	| IDENTIFIER LBRACK expression COLON RBRACK
+    | IDENTIFIER LBRACK COLON expression RBRACK;
+
+/*conditional_expression ::=
+  		expression AND expression
+  	| expression OR expression;
+
+relational_expression ::=
+  		expression LANGLE expression
+  	| expression LTEQ expression;
+*/
 
 
+// Function Definition
+define_function_statement ::=
+  		function_header function_body function_datatype_opt SEMICOLON;
 
+function_header ::=
+  		DEFINE_FUNCTION IDENTIFIER LPAREN formal_parameter_list_opt RPAREN;
 
+formal_parameter_list_opt ::=
+    | formal_parameter_list;
+
+formal_parameter_list ::=
+  		formal_parameter
+    | formal_parameter_list COMMA formal_parameter;
+
+formal_parameter ::=
+  		IDENTIFIER COLON type;
+
+function_body ::= 
+  		block;
+
+function_datatype_opt ::=
+    | COLON type;
+
+// Function invocation
+function_invocation_expression ::=
+  	  function_invocation SEMICOLON;
+  
+function_invocation ::= 
+  		QUESTION function_condition QUESTION IDENTIFIER LPAREN function_arguments_opt RPAREN;
+
+function_condition ::= 
+  		expression;
+  
+function_arguments_opt ::=
+    | function_arguments;
+
+function_arguments ::=
+  	  function_argument
+  	| function_arguments COMMA function_argument;
+
+/** Could be more **/
+function_argument ::=
+  	  expression;
+
+// User-defined types
+// Struct declaration
+define_struct_statement ::= 
+  	  DEFINE_TYPE IDENTIFIER struct_body SEMICOLON;
+
+struct_body ::=
+  	  LBRACE struct_fields_opt RBRACE;
+
+struct_fields_opt ::= 
+    | struct_fields;
+
+struct_fields ::=
+  	  struct_field
+    | struct_fields COMMA struct_field;
+
+struct_field ::= 
+  	  IDENTIFIER COLON type; 
+
+// Alias
+alias_declaration ::=
+  	  ALIAS type IDENTIFIER;
 
 
 
