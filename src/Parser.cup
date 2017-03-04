@@ -116,7 +116,7 @@ nonterminal expression, subexpression, expression_statement, statement_expressio
 nonterminal assignment_statement;
 nonterminal left_hand_side;
 nonterminal field_access;
-nonterminal seq_access;
+nonterminal seq_access, seq_access_lhs;
 nonterminal assignment_expression;  // A := B
 nonterminal conditional_expression; // A && B, A || B
 nonterminal relational_expression;  // A < B, A <= B
@@ -404,12 +404,20 @@ left_hand_side ::=
 field_access ::=
   	  IDENTIFIER DOT IDENTIFIER;
 
+// The left-hand side of an array access.
+// i.e. myVar[3], or myVar[3][2], or myVar.myField[2], or (getVar())[5]
+seq_access_lhs ::=
+      IDENTIFIER
+    | seq_access
+    | field_access
+    | LPAREN expression RPAREN;
+
 // NOTE: Identifier OR another array(seq)!
 seq_access ::=
-  	  IDENTIFIER LBRACK expression RBRACK
-  	| IDENTIFIER LBRACK expression COLON expression RBRACK
-  	| IDENTIFIER LBRACK expression COLON RBRACK
-    | IDENTIFIER LBRACK COLON expression RBRACK;
+      seq_access_lhs LBRACK expression RBRACK
+    | seq_access_lhs LBRACK expression COLON expression RBRACK
+    | seq_access_lhs LBRACK expression COLON RBRACK
+    | seq_access_lhs LBRACK COLON expression RBRACK;
 
 /*conditional_expression ::=
   		expression AND expression
