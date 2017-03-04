@@ -351,7 +351,7 @@ if_then_else_statement ::=
       IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
 
 loop_statement ::=
-      LOOP block_statements_opt ENDLOOP;
+      LOOP block_statements ENDLOOP;
 
 return_statement ::=
       RETURN expression SEMICOLON
