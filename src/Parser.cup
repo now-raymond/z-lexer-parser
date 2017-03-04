@@ -281,7 +281,6 @@ statement_without_trailing_substatement ::=
       block
     | expression_statement
     | assignment_statement
-    | empty_statement
     | print_statement
     | read_statement
     | alias_statement
