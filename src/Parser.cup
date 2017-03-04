@@ -248,8 +248,7 @@ block_statements ::=
     | block_statements block_statement;
 
 block_statement ::= 
-      return_statement
-    | statement;
+      statement;
 
 // TODO: add all statement types
 statement ::= 
@@ -279,6 +278,7 @@ statement_without_trailing_substatement ::=
     | print_statement
     | read_statement
     | alias_statement
+    | return_statement
     | break_statement
     | define_struct_statement
     | define_function_statement;
