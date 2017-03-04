@@ -100,6 +100,7 @@ nonterminal operator, unary_operator, binary_operator, assignment_operator;
 // Blocks and Statements
 nonterminal block, block_body, block_statements_opt, block_statements, block_statement;
 nonterminal statement, statements, statements_opt, statement_without_trailing_substatement;
+nonterminal global_declarations;
 nonterminal empty_statement, print_statement, read_statement;
 nonterminal alias_statement;
 nonterminal variable_declaration_statement, variable_declaration_statements;
@@ -260,10 +261,15 @@ statement ::=
     
 statements_opt ::=
     | statements;
+    
+global_declarations ::=
+      statements_opt
+    | variable_declaration_statements;
 
 program ::=
-      variable_declaration_statements statements_opt main_statement statements_opt
-    | statements_opt main_statement statements_opt;
+      global_declarations main_statement global_declarations;
+      // variable_declaration_statements statements_opt main_statement statements_opt
+    // | statements_opt main_statement statements_opt;
     
 statements ::=
 	  statement
