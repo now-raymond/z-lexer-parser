@@ -263,8 +263,8 @@ statements_opt ::=
     | statements;
     
 global_declarations ::=
-      statements_opt
-    | variable_declaration_statements;
+      variable_declaration_statements
+    | statements_opt;
 
 program ::=
       global_declarations main_statement global_declarations;
