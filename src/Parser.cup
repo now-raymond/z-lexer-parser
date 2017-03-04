@@ -110,7 +110,7 @@ nonterminal return_statement;
 nonterminal break_statement;
 
 // Expressions
-nonterminal expression, expression_statement, statement_expression;
+nonterminal expression, subexpression, expression_statement, statement_expression;
 nonterminal left_hand_side;
 nonterminal field_access;
 nonterminal seq_access;
@@ -204,13 +204,13 @@ operator ::=
   	| binary_operator;
 
 unary_operator ::=
-  		NOT;
+      NOT;
 
 binary_operator ::=
-  		PLUS
+      PLUS
   	| MINUS
   	| MULT
-		| DIV
+	| DIV
     | POF
   	| AND
   	| OR
@@ -271,10 +271,10 @@ empty_statement ::=
       SEMICOLON;
 
 print_statement ::= 
-      PRINT literal SEMICOLON;
+      PRINT expression SEMICOLON;
 
 read_statement ::= 
-      READ literal SEMICOLON;
+      READ expression SEMICOLON;
 
 alias_statement ::=
   		ALIAS type IDENTIFIER SEMICOLON;
@@ -313,23 +313,23 @@ seq_initializer ::=
 
 // Control Flow
 if_then_statement ::=
-  		IF LPAREN expression RPAREN THEN block_statements_opt ENDIF;
+      IF LPAREN expression RPAREN THEN block_statements_opt ENDIF;
 
 if_then_else_statement ::=
-  		IF LPAREN expression RPAREN THEN block_statements_opt ELSE block_statements_opt ENDIF;
+      IF LPAREN expression RPAREN THEN block_statements_opt ELSE block_statements_opt ENDIF;
 
 loop_statement ::=
-  		LOOP block_statements_opt ENDLOOP;
+      LOOP block_statements_opt ENDLOOP;
 
 return_statement ::=
-  		RETURN expression SEMICOLON
+      RETURN expression SEMICOLON
   	| RETURN SEMICOLON;
 
 // Break accepts an optional integer to specify number of nested loops to break out of.
 // We are making this an expression so that a variable can be evaluated for this value.
 // Type checking to ensure an integer value will have to be performed during semantic analysis.
 break_statement ::=
-  		BREAK expression SEMICOLON
+      BREAK expression SEMICOLON
   	| BREAK SEMICOLON;
 
 
@@ -345,15 +345,19 @@ expression_statement ::=
 
 // TODO: handle A + B + C
 expression ::=
-  		literal
+      expression binary_operator subexpression
+    | subexpression;
+
+subexpression ::=
+      literal
     | IDENTIFIER
   	| field_access
   	| seq_access
   	| function_invocation
-  	| unary_operator expression
-  	| LPAREN expression binary_operator expression RPAREN;
+  	| unary_operator subexpression
+  	// | LPAREN expression binary_operator expression RPAREN;
     //| expression binary_operator expression
-    //| LPAREN expression RPAREN;
+    | LPAREN expression RPAREN;
 
 /*assignment_expression ::=
   		conditional_expression
