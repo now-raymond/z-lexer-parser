@@ -279,7 +279,7 @@ statement_without_trailing_substatement ::=
     | variable_declaration_statement;
     
 assignment_statement ::=
-      expression assignment_operator expression;
+      expression assignment_operator expression SEMICOLON;
 
 // NOTE: Check if this is needed. This might mean "i:int := ;" is valid? Need to test.
 empty_statement ::= 
@@ -299,13 +299,12 @@ variable_declaration_statement ::=
 
 variable_declaration ::= 
       IDENTIFIER COLON type
-    | IDENTIFIER COLON type EQ variable_initializer;
+    | IDENTIFIER COLON type EQ variable_initializers;
 
 // Initializers
 variable_initializer ::=
       expression
-    | dict_initializer
-    | seq_initializer;
+    | dict_initializer;
 
 variable_initializers ::=
       variable_initializer
@@ -324,7 +323,8 @@ key_value_pair ::=
 
 seq_initializer ::=
   	  LBRACK RBRACK
-  	| primary_no_new_seq;
+    | LBRACK variable_initializers RBRACK;
+  	//| primary_no_new_seq;
     
 primary_no_new_seq ::=
       LBRACK variable_initializers RBRACK;
@@ -369,6 +369,7 @@ subexpression ::=
     | IDENTIFIER
   	| field_access
   	| seq_access
+    | seq_initializer
   	| function_invocation
   	| unary_operator subexpression
   	// | LPAREN expression binary_operator expression RPAREN;
