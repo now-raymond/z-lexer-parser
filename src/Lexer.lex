@@ -92,6 +92,7 @@ SingleCharacter = [^\r\n\'\\]
   "char"                         { return symbol(sym.CHAR); }
   "dict"                         { return symbol(sym.DICT); }
   "seq"                          { return symbol(sym.SEQ); }
+  "top"                          { return symbol(sym.TOP); }
   
   // Input-Output
   "read"                         { return symbol(sym.READ); }
