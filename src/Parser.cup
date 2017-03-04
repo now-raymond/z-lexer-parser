@@ -287,8 +287,7 @@ statement_without_trailing_substatement ::=
     | alias_statement
     | break_statement
     | define_struct_statement
-    | define_function_statement
-    | variable_declaration_statement;
+    | define_function_statement;
     
 assignment_statement ::=
       expression assignment_operator expression SEMICOLON;
@@ -306,9 +305,9 @@ read_statement ::=
 alias_statement ::=
   	  ALIAS type IDENTIFIER SEMICOLON;
     
-// variable_declaration_statements ::=
-      // variable_declaration_statements variable_declaration_statement
-    // | variable_declaration_statement;
+variable_declaration_statements ::=
+      variable_declaration_statements variable_declaration_statement
+    | variable_declaration_statement;
 
 variable_declaration_statement ::= 
       variable_declaration SEMICOLON;
