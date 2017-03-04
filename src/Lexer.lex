@@ -39,7 +39,7 @@ EndOfLineComment = "#" {InputCharacter}* {LineTerminator}?
 DocumentationComment = "/#" "#"+ [^/*] ~"#/"
 
 // Identifiers
-Identifier = [:jletter:][:jletterdigit:]*
+Identifier = [a-zA-Z][a-zA-Z0-9_]*
 
 // Integer literals
 IntegerLiteral = 0 | [1-9][0-9]*
@@ -54,7 +54,6 @@ FloatLiteral  = ({FLit1}|{FLit2}|{FLit3})
 FLit1    = [0-9]+ \. [0-9]* 
 FLit2    = \. [0-9]+ 
 FLit3    = [0-9]+ 
-Exponent = [eE] [+-]? [0-9]+
 
 // String and character literals
 StringCharacter = [^\r\n\"\\]
