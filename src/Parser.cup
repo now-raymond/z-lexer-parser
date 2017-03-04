@@ -98,12 +98,11 @@ nonterminal dict_type, seq_type;
 nonterminal operator, unary_operator, binary_operator, assignment_operator;
 
 // Blocks and Statements
-nonterminal block, block_body, block_statements_opt, block_statements, block_statement;
-nonterminal statement, statements, statements_opt, statement_without_trailing_substatement;
-nonterminal global_declarations;
+nonterminal block, block_statements_opt, block_statements, block_statement;
+nonterminal statement, statements, statement_without_trailing_substatement;
 nonterminal empty_statement, print_statement, read_statement;
 nonterminal alias_statement;
-nonterminal variable_declaration_statement, variable_declaration_statements;
+nonterminal variable_declaration_statement;
 
 // Control Flow Statements
 nonterminal if_then_statement, if_then_else_statement;
@@ -233,12 +232,7 @@ assignment_operator ::=
 // General structures (i.e. building blocks for other nonterminals)
 // { ..statements.. }
 block ::= 
-      LBRACE block_body RBRACE;
-      
-block_body ::=
-      variable_declaration_statements block_statements
-    | variable_declaration_statements
-    | block_statements;
+      LBRACE block_statements RBRACE;
 
 // ..statements.. (zero or more)
 block_statements_opt ::= 
@@ -249,8 +243,7 @@ block_statements ::=
     | block_statements block_statement;
 
 block_statement ::= 
-      return_statement
-    | statement;
+      statement;
 
 // TODO: add all statement types
 statement ::= 
@@ -258,18 +251,12 @@ statement ::=
     | if_then_statement
     | if_then_else_statement
     | loop_statement;
-    
-statements_opt ::=
-    | statements;
-    
-global_declarations ::=
-      statements_opt
-    | variable_declaration_statements;
 
 program ::=
-      global_declarations main_statement global_declarations;
-      // variable_declaration_statements statements_opt main_statement statements_opt
-    // | statements_opt main_statement statements_opt;
+      main_statement
+    | main_statement statements
+    | statements main_statement
+    | statements main_statement statements;
     
 statements ::=
 	  statement
@@ -284,10 +271,12 @@ statement_without_trailing_substatement ::=
     | empty_statement
     | print_statement
     | read_statement
-    | alias_statement
+  	| alias_statement
+    | return_statement
     | break_statement
-    | define_struct_statement
-    | define_function_statement;
+  	| define_struct_statement
+  	| define_function_statement
+    | variable_declaration_statement;
     
 assignment_statement ::=
       expression assignment_operator expression SEMICOLON;
@@ -304,10 +293,6 @@ read_statement ::=
 
 alias_statement ::=
   	  ALIAS type IDENTIFIER SEMICOLON;
-    
-variable_declaration_statements ::=
-      variable_declaration_statements variable_declaration_statement
-    | variable_declaration_statement;
 
 variable_declaration_statement ::= 
       variable_declaration SEMICOLON;
