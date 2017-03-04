@@ -345,13 +345,13 @@ primary_no_new_seq ::=
 
 // Control Flow
 if_then_statement ::=
-      IF LPAREN expression RPAREN THEN block_body ENDIF;
+      IF LPAREN expression RPAREN THEN block_statements ENDIF;
 
 if_then_else_statement ::=
-      IF LPAREN expression RPAREN THEN block_body ELSE block_body ENDIF;
+      IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
 
 loop_statement ::=
-      LOOP block_body ENDLOOP;
+      LOOP block_statements_opt ENDLOOP;
 
 return_statement ::=
       RETURN expression SEMICOLON
