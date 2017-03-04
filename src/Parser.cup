@@ -269,7 +269,7 @@ global_declarations ::=
     | statements_opt;
 
 program ::=
-      global_declarations main_statement statements_opt;
+      global_declarations main_statement global_declarations;
       // variable_declaration_statements statements_opt main_statement statements_opt
     // | statements_opt main_statement statements_opt;
     
