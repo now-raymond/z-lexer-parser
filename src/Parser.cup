@@ -287,6 +287,7 @@ statement_without_trailing_substatement ::=
     | read_statement
     | alias_statement
     | break_statement
+    | define_struct_statement
     | define_function_statement;
     
 assignment_statement ::=
@@ -310,8 +311,7 @@ variable_declaration_statements ::=
     | variable_declaration_statement;
 
 variable_declaration_statement ::= 
-      variable_declaration SEMICOLON
-    | DEFINE_TYPE IDENTIFIER struct_body SEMICOLON;
+      variable_declaration SEMICOLON;
 
 variable_declaration ::= 
       IDENTIFIER COLON type
@@ -477,8 +477,8 @@ function_argument ::=
 
 // User-defined types
 // Struct declaration
-// define_struct_statement ::= 
-  	  // DEFINE_TYPE IDENTIFIER struct_body SEMICOLON;
+define_struct_statement ::= 
+  	  DEFINE_TYPE IDENTIFIER struct_body SEMICOLON;
 
 struct_body ::=
   	  LBRACE struct_fields_opt RBRACE;
