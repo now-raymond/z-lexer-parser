@@ -7,6 +7,9 @@ parser code  {:
     "Syntax error at line " + (current_token.left + 1) + ", column " + current_token.right + "\n", null);
     syntaxErrors = true;
   }
+  public void log(String logStr) {
+      if (true) System.out.println(logStr);
+  }
 :};
 
 // *************************************
@@ -126,6 +129,7 @@ nonterminal seq_access;
 
 // Variable declaration & Initializers
 nonterminal variable_declaration, variable_initializer, variable_initializers;
+nonterminal expression_list;
 nonterminal dict_initializer, seq_initializer;
 nonterminal key_value_pairs, key_value_pair;
 
@@ -304,16 +308,15 @@ variable_declaration_statement ::=
 
 variable_declaration ::= 
       IDENTIFIER COLON type
-    | IDENTIFIER COLON type EQ variable_initializers;
+    | IDENTIFIER COLON type EQ expression_list;
 
 // Initializers
-variable_initializer ::=
-      expression
-    | dict_initializer;
+// variable_initializer ::=
+      // expression;
 
-variable_initializers ::=
-      variable_initializer
-    | variable_initializers COMMA variable_initializer;
+expression_list ::=
+      expression
+    | expression_list COMMA expression;
 
 dict_initializer ::= 
       LBRACE RBRACE
@@ -324,11 +327,12 @@ key_value_pairs ::=
   	| key_value_pairs COMMA key_value_pair;
 
 key_value_pair ::=
-  	  variable_initializer COLON variable_initializer;
+  	  IDENTIFIER COLON expression
+  	| literal COLON expression;
 
 seq_initializer ::=
   	  LBRACK RBRACK
-    | LBRACK variable_initializers RBRACK;
+    | LBRACK expression_list RBRACK;
 
 // Control Flow
 if_then_statement ::=
@@ -374,6 +378,7 @@ subexpression ::=
   	| field_access
   	| seq_access
     | seq_initializer
+    | dict_initializer
   	| function_invocation
   	| unary_operator subexpression
     | LPAREN expression RPAREN;
