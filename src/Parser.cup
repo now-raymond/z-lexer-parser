@@ -105,11 +105,18 @@ nonterminal empty_statement, print_statement, read_statement;
 nonterminal alias_statement;
 nonterminal variable_declaration_statement;
 
+// Blocks & Statements for Loops
+nonterminal block_statements_loop;
+nonterminal statement_loop;
+
 // Control Flow Statements
 nonterminal if_then_statement, if_then_else_statement;
 nonterminal loop_statement;
 nonterminal return_statement;
 nonterminal break_statement;
+
+// Control Flow for Loops
+nonterminal if_then_loop_statement, if_then_else_loop_statement;
 
 // Expressions
 nonterminal expression, subexpression, expression_statement;
@@ -236,6 +243,10 @@ block_statements_opt ::=
 block_statements ::= 
       block_statement
     | block_statements block_statement;
+    
+block_statements_loop ::= 
+      statement_loop
+    | block_statements_loop statement_loop;
 
 block_statement ::= 
       statement;
@@ -245,6 +256,12 @@ statement ::=
       statement_without_trailing_substatement
     | if_then_statement
     | if_then_else_statement
+    | loop_statement;
+    
+statement_loop ::= 
+      statement_without_trailing_substatement
+    | if_then_loop_statement
+    | if_then_else_loop_statement
     | loop_statement;
     
 statements ::=
@@ -262,7 +279,6 @@ statement_without_trailing_substatement ::=
     | read_statement
   	| alias_statement
     | return_statement
-    | break_statement
   	| define_struct_statement
   	| define_function_statement
     | variable_declaration_statement;
@@ -321,8 +337,17 @@ if_then_statement ::=
 if_then_else_statement ::=
       IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
 
+// For loops
+if_then_loop_statement ::=
+      IF LPAREN expression RPAREN THEN block_statements_opt break_statement block_statements_opt ENDIF
+    | IF LPAREN expression RPAREN THEN block_statements ENDIF;
+
+if_then_else_loop_statement ::=
+      IF LPAREN expression RPAREN THEN block_statements_opt break_statement block_statements_opt ELSE block_statements_opt break_statement block_statements_opt ENDIF
+    | IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
+
 loop_statement ::=
-      LOOP block_statements_opt ENDLOOP;
+      LOOP block_statements_loop ENDLOOP;
 
 return_statement ::=
       RETURN expression SEMICOLON
@@ -334,7 +359,6 @@ return_statement ::=
 break_statement ::=
       BREAK expression SEMICOLON
   	| BREAK SEMICOLON;
-
     
 // Expressions
 expression_statement ::=
