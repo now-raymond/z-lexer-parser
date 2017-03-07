@@ -153,8 +153,8 @@ SingleCharacter = [^\r\n\'\\]
   {IntegerLiteral}               { return symbol(sym.INTEGER_LITERAL, new Integer(yytext())); }
   
   // Rational literals
-  // TODO: appropriately handle the type instead of casting to Integer
-  {RationalLiteral}				 { return symbol(sym.RATIONAL_LITERAL, new Integer(yytext())); }
+  // (We are storing this value as a String internally.)
+  {RationalLiteral}				 { return symbol(sym.RATIONAL_LITERAL, new String(yytext())); }
   
   {FloatLiteral}                 { return symbol(sym.FLOAT_LITERAL, new Float(yytext().substring(0,yylength()-1))); }
   
