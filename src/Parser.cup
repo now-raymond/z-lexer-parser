@@ -89,6 +89,7 @@ terminal java.lang.String    IDENTIFIER;
 // Program Structure
 nonterminal program;
 nonterminal main_statement;
+nonterminal global_declarations;
 
 // Lexical Structure.
 nonterminal literal;
@@ -103,10 +104,11 @@ nonterminal unary_operator, binary_operator, assignment_operator;
 
 // Blocks and Statements
 nonterminal block, block_statements_opt, block_statements, block_statement;
-nonterminal statement, statements, statement_without_trailing_substatement;
+nonterminal block_body;
+nonterminal statement, statements, statement_without_trailing_substatement, statements_opt;
 nonterminal empty_statement, print_statement, read_statement;
 nonterminal alias_statement;
-nonterminal variable_declaration_statement;
+nonterminal variable_declaration_statement, variable_declaration_statements;
 
 // Blocks & Statements for Loops
 nonterminal block_statements_loop;
@@ -128,7 +130,7 @@ nonterminal field_access;
 nonterminal seq_access;
 
 // Variable declaration & Initializers
-nonterminal variable_declaration, variable_initializer, variable_initializers;
+nonterminal variable_declaration;
 nonterminal expression_list;
 nonterminal dict_initializer, seq_initializer;
 nonterminal key_value_pairs, key_value_pair;
@@ -159,10 +161,16 @@ start with program;
 
 // Program structure
 program ::=
-      main_statement
-    | main_statement statements
-    | statements main_statement
-    | statements main_statement statements;
+      global_declarations main_statement global_declarations;
+      
+      // main_statement
+    // | main_statement statements
+    // | statements main_statement
+    // | statements main_statement statements;
+    
+global_declarations ::=
+      variable_declaration_statements
+    | statements_opt;
 
 main_statement ::= 
       MAIN block SEMICOLON;
@@ -238,7 +246,11 @@ assignment_operator ::=
 // General structures (i.e. building blocks for other nonterminals)
 // { ..statements.. }
 block ::= 
-      LBRACE block_statements RBRACE;
+      LBRACE block_body RBRACE;
+      
+block_body ::=
+      variable_declaration_statements block_statements
+    | block_statements;
 
 // ..statements.. (zero or more)
 block_statements_opt ::= 
@@ -271,6 +283,10 @@ statement_loop ::=
 statements ::=
 	  statement
   	| statements statement;
+    
+statements_opt ::=
+    | statements;
+
 
 // NOTE: Check if block should be present here or not. Block includes curly braces {}.
 // These are for "simple" statements.
@@ -284,8 +300,7 @@ statement_without_trailing_substatement ::=
   	| alias_statement
     | return_statement
   	| define_struct_statement
-  	| define_function_statement
-    | variable_declaration_statement;
+  	| define_function_statement;
     
 assignment_statement ::=
       expression assignment_operator expression SEMICOLON;
@@ -302,6 +317,10 @@ read_statement ::=
 
 alias_statement ::=
   	  ALIAS type IDENTIFIER SEMICOLON;
+      
+variable_declaration_statements ::=
+      variable_declaration_statements variable_declaration_statement
+    | variable_declaration_statement;
 
 variable_declaration_statement ::= 
       variable_declaration SEMICOLON;
