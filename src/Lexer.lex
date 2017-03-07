@@ -57,7 +57,7 @@ FLit3    = [0-9]+
 
 // String and character literals
 StringCharacter = [^\r\n\"\\]
-SingleCharacter = [^\r\n\'\\]
+SingleCharacter = [a-zA-Z0-9 ] | [\!\"#$%'\(\)\*\+,-\./:;<=>\?@\[\\\]\^_`{\|}~]
 
 %state STRING, CHARLITERAL
 
