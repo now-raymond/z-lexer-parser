@@ -33,6 +33,7 @@ terminal INT, RAT, FLOAT; // Numeric types
 terminal CHAR;            // Character type (single)
 terminal DICT;            // Dictionary type
 terminal SEQ;             // List type
+terminal TOP;             // Any type
 
 // Input / output
 terminal READ;
@@ -173,7 +174,8 @@ type ::=
 
 primitive_type ::= 
       numeric_type
-    | BOOLEAN;
+    | BOOLEAN
+    | TOP;
 
 numeric_type ::= 
       integral_type
