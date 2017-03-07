@@ -311,7 +311,8 @@ variable_declaration_statements ::=
     | variable_declaration_statement;
 
 variable_declaration_statement ::= 
-      variable_declaration SEMICOLON;
+      struct_fields SEMICOLON
+    | IDENTIFIER COLON type EQ variable_initializers SEMICOLON;
 
 variable_declaration ::= 
       IDENTIFIER COLON type
