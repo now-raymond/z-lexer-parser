@@ -239,7 +239,7 @@ block ::=
       
 block_body ::=
       variable_declaration_statements block_statements
-    | variable_declaration_statements
+    //| variable_declaration_statements
     | block_statements;
 
 // ..statements.. (zero or more)
