@@ -146,6 +146,12 @@ precedence left DIV, MULT;
 start with program;
 
 // Program structure
+program ::=
+      main_statement
+    | main_statement statements
+    | statements main_statement
+    | statements main_statement statements;
+
 main_statement ::= 
       MAIN block SEMICOLON;
 
@@ -238,12 +244,6 @@ statement ::=
     | if_then_statement
     | if_then_else_statement
     | loop_statement;
-
-program ::=
-      main_statement
-    | main_statement statements
-    | statements main_statement
-    | statements main_statement statements;
     
 statements ::=
 	  statement
