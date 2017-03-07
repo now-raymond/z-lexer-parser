@@ -95,7 +95,7 @@ nonterminal numeric_type, integral_type;
 nonterminal dict_type, seq_type;
 
 // Operators
-nonterminal operator, unary_operator, binary_operator, assignment_operator;
+nonterminal unary_operator, binary_operator, assignment_operator;
 
 // Blocks and Statements
 nonterminal block, block_statements_opt, block_statements, block_statement;
@@ -111,21 +111,14 @@ nonterminal return_statement;
 nonterminal break_statement;
 
 // Expressions
-nonterminal expression, subexpression, expression_statement, statement_expression;
+nonterminal expression, subexpression, expression_statement;
 nonterminal assignment_statement;
-nonterminal left_hand_side;
 nonterminal field_access;
 nonterminal seq_access;
-nonterminal assignment_expression;  // A := B
-nonterminal conditional_expression; // A && B, A || B
-nonterminal relational_expression;  // A < B, A <= B
-nonterminal binary_expression;      // A + B, A - B, A * B, A ^ B, A in B, A :: B etc.
-nonterminal unary_expression;       // !A, -B
-//nonterminal concat_expression;      // A :: B - note, can be daisy chained i.e. A :: B :: C
 
 // Variable declaration & Initializers
 nonterminal variable_declaration, variable_initializer, variable_initializers;
-nonterminal dict_initializer, seq_initializer, primary_no_new_seq;
+nonterminal dict_initializer, seq_initializer;
 nonterminal key_value_pairs, key_value_pair;
 
 // Function declaration (fdef)
@@ -134,7 +127,6 @@ nonterminal function_header, function_body, function_datatype_opt;
 nonterminal formal_parameter_list_opt, formal_parameter_list, formal_parameter;
 
 // Function invocation
-nonterminal function_invocation_expression;
 nonterminal function_invocation, function_condition;
 nonterminal function_arguments_opt, function_arguments, function_argument;
 
@@ -142,7 +134,6 @@ nonterminal function_arguments_opt, function_arguments, function_argument;
 nonterminal define_struct_statement, struct_body;
 nonterminal struct_fields_opt; // For empty structs with no fields
 nonterminal struct_fields, struct_field;
-nonterminal alias_declaration;
 
 // Precedence rules
 precedence left PLUS, MINUS;
@@ -201,10 +192,6 @@ seq_type ::=
       SEQ LANGLE type RANGLE;
 
 // Operators
-operator ::=
-  	  unary_operator
-  	| binary_operator;
-
 unary_operator ::=
       NOT
     | MINUS;
@@ -281,7 +268,7 @@ statement_without_trailing_substatement ::=
 assignment_statement ::=
       expression assignment_operator expression SEMICOLON;
 
-// NOTE: Check if this is needed. This might mean "i:int := ;" is valid? Need to test.
+// NOTE: Check if this is needed.
 empty_statement ::= 
       SEMICOLON;
 
@@ -324,10 +311,6 @@ key_value_pair ::=
 seq_initializer ::=
   	  LBRACK RBRACK
     | LBRACK variable_initializers RBRACK;
-  	//| primary_no_new_seq;
-    
-primary_no_new_seq ::=
-      LBRACK variable_initializers RBRACK;
 
 // Control Flow
 if_then_statement ::=
@@ -350,16 +333,11 @@ break_statement ::=
       BREAK expression SEMICOLON
   	| BREAK SEMICOLON;
 
-
+    
 // Expressions
 expression_statement ::=
       expression SEMICOLON;
 
-/*statement_expression ::=
-  		assignment
-    | function_invocation;*/
-
-// TODO: handle A + B + C
 expression ::=
       expression binary_operator subexpression
     | subexpression;
@@ -372,20 +350,7 @@ subexpression ::=
     | seq_initializer
   	| function_invocation
   	| unary_operator subexpression
-  	// | LPAREN expression binary_operator expression RPAREN;
-    //| expression binary_operator expression
     | LPAREN expression RPAREN;
-
-/*assignment_expression ::=
-  		conditional_expression
-  	| assignment;
-
-assignment ::=
-  		left_hand_side EQ assignment_expression;
-
-left_hand_side ::=
-  		IDENTIFIER
-  	| field_access;*/
 
 field_access ::=
   	  IDENTIFIER DOT IDENTIFIER;
@@ -396,15 +361,6 @@ seq_access ::=
   	| IDENTIFIER LBRACK expression COLON expression RBRACK
   	| IDENTIFIER LBRACK expression COLON RBRACK
     | IDENTIFIER LBRACK COLON expression RBRACK;
-
-/*conditional_expression ::=
-  		expression AND expression
-  	| expression OR expression;
-
-relational_expression ::=
-  		expression LANGLE expression
-  	| expression LTEQ expression;
-*/
 
 
 // Function Definition
@@ -430,10 +386,7 @@ function_body ::=
 function_datatype_opt ::=
     | COLON type;
 
-// Function invocation
-function_invocation_expression ::=
-  	  function_invocation SEMICOLON;
-  
+// Function invocation  
 function_invocation ::= 
   		QUESTION function_condition QUESTION IDENTIFIER LPAREN function_arguments_opt RPAREN;
 
@@ -468,17 +421,3 @@ struct_fields ::=
 
 struct_field ::= 
   	  IDENTIFIER COLON type; 
-
-// Alias
-alias_declaration ::=
-  	  ALIAS type IDENTIFIER;
-
-
-
-
-
-
-
-
-
- 
