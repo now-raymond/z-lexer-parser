@@ -14,18 +14,18 @@ bin/$(LANG).class: src/Lexer.lex src/Parser.cup src/$(LANG).java
 TESTS = $(TESTCASES)
 .PHONY: test $(TESTCASES) 
 test: $(TESTCASES)
-	@./test_checker.py
+	@python ./test_checker.py
 	@echo done
 $(TESTS):	clobber_csv
 	echo $@ >> result.csv
-	./runTests.sh $(VERCUP) $(LANG) $@
+	./testSystem.cmd $@
 
 .PHONY: clobber_csv
 clobber_csv:
 	echo > result.csv
 
 clean:
-	rm -rf src/Lexer.java src/Lexer.java~ src/sym.java src/Parser.java bin/*.class
+	rm -rf src/Lexer.java src/Lexer.java~ src/sym.java src/Parser.java bin/*.class results/*.csv
 
 # Custom additions
 
