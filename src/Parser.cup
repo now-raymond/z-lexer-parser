@@ -105,7 +105,7 @@ nonterminal unary_operator, binary_operator, assignment_operator;
 
 // Blocks and Statements
 nonterminal block, block_statements_opt, block_statements, block_statement;
-nonterminal block_body;
+nonterminal block_body, block_body_loop;
 nonterminal statement, statements, statement_without_trailing_substatement, statements_opt;
 nonterminal empty_statement, print_statement, read_statement;
 nonterminal alias_statement;
@@ -270,6 +270,10 @@ block ::=
 block_body ::=
       declarations block_statements
     | block_statements;
+      
+block_body_loop ::=
+      declarations block_statements_loop
+    | block_statements_loop;
 
 // ..statements.. (zero or more)
 block_statements_opt ::= 
@@ -386,7 +390,7 @@ if_then_else_loop_statement ::=
     | IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
 
 loop_statement ::=
-      LOOP block_statements_loop ENDLOOP;
+      LOOP block_body_loop ENDLOOP;
 
 return_statement ::=
       RETURN expression SEMICOLON
