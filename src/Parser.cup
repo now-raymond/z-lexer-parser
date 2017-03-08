@@ -377,11 +377,12 @@ if_then_loop_statement ::=
 
 if_then_else_loop_statement ::=
       IF LPAREN expression RPAREN THEN loop_body ELSE loop_body ENDIF;
-    
+
+// Not clear if break needs to be the last statement in a loop - we're going to allow it.
 loop_body ::=
       block_body
-    | block_body break_statement
-    | break_statement;
+    | block_body break_statement block_statements_opt
+    | break_statement block_statements_opt;
 
 loop_statement ::=
       LOOP block_body_loop ENDLOOP;
