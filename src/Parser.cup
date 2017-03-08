@@ -187,7 +187,8 @@ declarations ::=
     | declaration;
     
 declaration ::=
-      define_struct_statement
+      variable_declaration_statement
+    | define_struct_statement
     | alias_statement;
 
 main_statement ::= 
@@ -305,7 +306,6 @@ statement_loop ::=
     | break_statement
     | if_then_loop_statement
     | if_then_else_loop_statement
-    | variable_declaration_statement
     | loop_statement;
 
 // NOTE: Check if block should be present here or not. Block includes curly braces {}.
