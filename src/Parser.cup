@@ -284,7 +284,8 @@ block_statements_loop ::=
     | block_statements_loop statement_loop;
 
 block_statement ::= 
-      statement;
+      return_statement
+    | statement;
 
 // TODO: add all statement types
 statement ::= 
@@ -315,9 +316,9 @@ statement_without_trailing_substatement ::=
     | expression_statement
     | assignment_statement
     | print_statement
-    | read_statement
+    | read_statement;
   	// | alias_statement
-    | return_statement;
+    // | return_statement;
   	// | define_struct_statement
   	// | define_function_statement;
     
