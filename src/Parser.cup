@@ -178,7 +178,8 @@ global_declarations ::=
 global_declaration ::=
       variable_declaration_statement
     | define_function_statement
-    | define_struct_statement;
+    | define_struct_statement
+    | alias_statement;
 
 main_statement ::= 
       MAIN block SEMICOLON;
@@ -302,7 +303,6 @@ statement_without_trailing_substatement ::=
       block
     | expression_statement
     | assignment_statement
-    | empty_statement
     | print_statement
     | read_statement
   	| alias_statement
@@ -312,10 +312,6 @@ statement_without_trailing_substatement ::=
     
 assignment_statement ::=
       expression assignment_operator expression SEMICOLON;
-
-// NOTE: Check if this is needed.
-empty_statement ::= 
-      SEMICOLON;
 
 print_statement ::= 
       PRINT expression SEMICOLON;
