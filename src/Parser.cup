@@ -295,6 +295,7 @@ statement ::=
     
 statement_loop ::= 
       statement_without_trailing_substatement
+    | break_statement
     | if_then_loop_statement
     | if_then_else_loop_statement
     | loop_statement;
