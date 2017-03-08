@@ -408,7 +408,7 @@ break_statement ::=
     
 // Expressions
 expression_statement ::=
-      function_invocation SEMICOLON;
+      expression SEMICOLON;
 
 expression ::=
       expression binary_operator subexpression
