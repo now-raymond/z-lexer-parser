@@ -128,7 +128,7 @@ nonterminal if_then_loop_statement, if_then_else_loop_statement;
 nonterminal expression, subexpression, expression_statement;
 nonterminal assignment_statement;
 nonterminal field_access;
-nonterminal seq_access;
+nonterminal seq_access, seq_access_lhs;
 
 // Variable declaration & Initializers
 nonterminal variable_declaration;
@@ -420,13 +420,21 @@ subexpression ::=
 
 field_access ::=
   	  IDENTIFIER DOT IDENTIFIER;
+      
+// The left-hand side of an array access.
+// i.e. myVar[3], or myVar[3][2], or myVar.myField[2], or (getVar())[5]
+seq_access_lhs ::=
+      IDENTIFIER
+    | seq_access
+    | field_access
+    | LPAREN expression RPAREN;
 
 // NOTE: Identifier OR another array(seq)!
 seq_access ::=
-  	  IDENTIFIER LBRACK expression RBRACK
-  	| IDENTIFIER LBRACK expression COLON expression RBRACK
-  	| IDENTIFIER LBRACK expression COLON RBRACK
-    | IDENTIFIER LBRACK COLON expression RBRACK;
+      seq_access_lhs LBRACK expression RBRACK
+    | seq_access_lhs LBRACK expression COLON expression RBRACK
+    | seq_access_lhs LBRACK expression COLON RBRACK
+    | seq_access_lhs LBRACK COLON expression RBRACK;
 
 
 // Function Definition
