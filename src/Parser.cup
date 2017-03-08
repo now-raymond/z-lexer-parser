@@ -89,7 +89,7 @@ terminal java.lang.String    IDENTIFIER;
 // Program Structure
 nonterminal program;
 nonterminal main_statement;
-nonterminal global_declarations;
+nonterminal global_declarations, global_declaration, global_declarations_opt;
 
 // Lexical Structure.
 nonterminal literal;
@@ -161,16 +161,24 @@ start with program;
 
 // Program structure
 program ::=
-      global_declarations main_statement global_declarations;
+      global_declarations_opt main_statement global_declarations_opt;
       
       // main_statement
     // | main_statement statements
     // | statements main_statement
     // | statements main_statement statements;
     
+global_declarations_opt ::=
+    | global_declarations;
+    
 global_declarations ::=
-      variable_declaration_statements
-    | statements_opt;
+      global_declaration global_declarations
+    | global_declaration;
+    
+global_declaration ::=
+      variable_declaration_statement
+    | define_function_statement
+    | define_struct_statement;
 
 main_statement ::= 
       MAIN block SEMICOLON;
