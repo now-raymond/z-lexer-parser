@@ -427,6 +427,7 @@ seq_access_lhs ::=
       IDENTIFIER
     | seq_access
     | field_access
+    | function_invocation
     | LPAREN expression RPAREN;
 
 // NOTE: Identifier OR another array(seq)!
