@@ -90,6 +90,7 @@ terminal java.lang.String    IDENTIFIER;
 nonterminal program;
 nonterminal main_statement;
 nonterminal global_declarations, global_declaration, global_declarations_opt;
+nonterminal declarations, declaration;
 
 // Lexical Structure.
 nonterminal literal;
@@ -178,6 +179,15 @@ global_declarations ::=
 global_declaration ::=
       variable_declaration_statement
     | define_function_statement
+    | define_struct_statement;
+    // | alias_statement;
+    
+declarations ::=
+      declarations declaration
+    | declaration;
+    
+declaration ::=
+      variable_declaration_statement
     | define_struct_statement
     | alias_statement;
 
@@ -258,7 +268,7 @@ block ::=
       LBRACE block_body RBRACE;
       
 block_body ::=
-      variable_declaration_statements block_statements
+      declarations block_statements
     | block_statements;
 
 // ..statements.. (zero or more)
@@ -305,10 +315,10 @@ statement_without_trailing_substatement ::=
     | assignment_statement
     | print_statement
     | read_statement
-  	| alias_statement
-    | return_statement
-  	| define_struct_statement
-  	| define_function_statement;
+  	// | alias_statement
+    | return_statement;
+  	// | define_struct_statement
+  	// | define_function_statement;
     
 assignment_statement ::=
       expression assignment_operator expression SEMICOLON;
