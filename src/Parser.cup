@@ -179,8 +179,8 @@ global_declarations ::=
 global_declaration ::=
       variable_declaration_statement
     | define_function_statement
-    | define_struct_statement;
-    // | alias_statement;
+    | define_struct_statement
+    | alias_statement;
     
 declarations ::=
       declarations declaration
