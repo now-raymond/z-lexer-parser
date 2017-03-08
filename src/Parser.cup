@@ -417,9 +417,9 @@ subexpression ::=
   	| function_invocation
   	| unary_operator subexpression
     | LPAREN expression RPAREN;
-
+    
 field_access ::=
-  	  IDENTIFIER DOT IDENTIFIER;
+  	  seq_access_lhs DOT IDENTIFIER;
       
 // The left-hand side of an array access.
 // i.e. myVar[3], or myVar[3][2], or myVar.myField[2], or (getVar())[5]
