@@ -187,8 +187,7 @@ declarations ::=
     | declaration;
     
 declaration ::=
-      variable_declaration_statement
-    | define_struct_statement
+      define_struct_statement
     | alias_statement;
 
 main_statement ::= 
@@ -292,6 +291,7 @@ block_statements_loop ::=
 
 block_statement ::= 
       return_statement
+    | variable_declaration_statement
     | statement;
 
 // TODO: add all statement types
