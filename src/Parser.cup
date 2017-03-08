@@ -385,11 +385,11 @@ if_then_else_statement ::=
 
 // For loops
 if_then_loop_statement ::=
-      IF LPAREN expression RPAREN THEN block_body_opt break_statement block_statements_opt ENDIF
+      IF LPAREN expression RPAREN THEN block_body_opt break_statement ENDIF
     | IF LPAREN expression RPAREN THEN block_body ENDIF;
 
 if_then_else_loop_statement ::=
-      IF LPAREN expression RPAREN THEN block_body_opt break_statement block_statements_opt ELSE block_body_opt break_statement block_statements_opt ENDIF
+      IF LPAREN expression RPAREN THEN block_body_opt break_statement ELSE block_body_opt break_statement ENDIF
     | IF LPAREN expression RPAREN THEN block_body ELSE block_body ENDIF;
 
 loop_statement ::=
