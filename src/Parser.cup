@@ -7,9 +7,6 @@ parser code  {:
     "Syntax error at line " + (current_token.left + 1) + ", column " + current_token.right + "\n", null);
     syntaxErrors = true;
   }
-  public void log(String logStr) {
-      if (true) System.out.println(logStr);
-  }
 :};
 
 // *************************************
@@ -89,8 +86,6 @@ terminal java.lang.String    IDENTIFIER;
 // Program Structure
 nonterminal program;
 nonterminal main_statement;
-nonterminal global_declarations, global_declaration, global_declarations_opt;
-nonterminal declarations, declaration;
 
 // Lexical Structure.
 nonterminal literal;
@@ -101,12 +96,12 @@ nonterminal numeric_type, integral_type;
 nonterminal dict_type, seq_type;
 
 // Operators
-nonterminal unary_operator, binary_operator, assignment_operator;
+nonterminal operator, unary_operator, binary_operator, assignment_operator;
 
 // Blocks and Statements
-nonterminal block, block_statements_opt, block_statements, block_statement;
-nonterminal block_body;
-nonterminal statement, statements, statement_without_trailing_substatement, statements_opt;
+nonterminal block, block_body, block_statements_opt, block_statements, block_statement;
+nonterminal statement, statements, statements_opt, statement_without_trailing_substatement;
+nonterminal global_declarations;
 nonterminal empty_statement, print_statement, read_statement;
 nonterminal alias_statement;
 nonterminal variable_declaration_statement, variable_declaration_statements;
@@ -125,15 +120,21 @@ nonterminal break_statement;
 nonterminal if_then_loop_statement, if_then_else_loop_statement;
 
 // Expressions
-nonterminal expression, subexpression, expression_statement;
+nonterminal expression, subexpression, expression_statement, statement_expression;
 nonterminal assignment_statement;
+nonterminal left_hand_side;
 nonterminal field_access;
 nonterminal seq_access, seq_access_lhs;
+nonterminal assignment_expression;  // A := B
+nonterminal conditional_expression; // A && B, A || B
+nonterminal relational_expression;  // A < B, A <= B
+nonterminal binary_expression;      // A + B, A - B, A * B, A ^ B, A in B, A :: B etc.
+nonterminal unary_expression;       // !A, -B
+//nonterminal concat_expression;      // A :: B - note, can be daisy chained i.e. A :: B :: C
 
 // Variable declaration & Initializers
-nonterminal variable_declaration;
-nonterminal expression_list;
-nonterminal dict_initializer, seq_initializer;
+nonterminal variable_declaration, variable_initializer, variable_initializers;
+nonterminal dict_initializer, seq_initializer, primary_no_new_seq;
 nonterminal key_value_pairs, key_value_pair;
 
 // Function declaration (fdef)
@@ -142,6 +143,7 @@ nonterminal function_header, function_body, function_datatype_opt;
 nonterminal formal_parameter_list_opt, formal_parameter_list, formal_parameter;
 
 // Function invocation
+nonterminal function_invocation_expression;
 nonterminal function_invocation, function_condition;
 nonterminal function_arguments_opt, function_arguments, function_argument;
 
@@ -149,6 +151,7 @@ nonterminal function_arguments_opt, function_arguments, function_argument;
 nonterminal define_struct_statement, struct_body;
 nonterminal struct_fields_opt; // For empty structs with no fields
 nonterminal struct_fields, struct_field;
+nonterminal alias_declaration;
 
 // Precedence rules
 precedence left PLUS, MINUS;
@@ -161,36 +164,6 @@ precedence left DIV, MULT;
 start with program;
 
 // Program structure
-program ::=
-      global_declarations_opt main_statement global_declarations_opt;
-      
-      // main_statement
-    // | main_statement statements
-    // | statements main_statement
-    // | statements main_statement statements;
-    
-global_declarations_opt ::=
-    | global_declarations;
-    
-global_declarations ::=
-      global_declaration global_declarations
-    | global_declaration;
-    
-global_declaration ::=
-      variable_declaration_statement
-    | define_function_statement
-    | define_struct_statement
-    | alias_statement;
-    
-declarations ::=
-      declarations declaration
-    | declaration;
-    
-declaration ::=
-      variable_declaration_statement
-    | define_struct_statement
-    | alias_statement;
-
 main_statement ::= 
       MAIN block SEMICOLON;
 
@@ -238,6 +211,10 @@ seq_type ::=
       SEQ LANGLE type RANGLE;
 
 // Operators
+operator ::=
+  	  unary_operator
+  	| binary_operator;
+
 unary_operator ::=
       NOT
     | MINUS;
@@ -268,7 +245,8 @@ block ::=
       LBRACE block_body RBRACE;
       
 block_body ::=
-      declarations block_statements
+      variable_declaration_statements block_statements
+    //| variable_declaration_statements
     | block_statements;
 
 // ..statements.. (zero or more)
@@ -301,13 +279,21 @@ statement_loop ::=
     | if_then_else_loop_statement
     | loop_statement;
     
+statements_opt ::=
+    | statements;
+    
+global_declarations ::=
+      variable_declaration_statements
+    | statements_opt;
+
+program ::=
+      global_declarations main_statement global_declarations;
+      // variable_declaration_statements statements_opt main_statement statements_opt
+    // | statements_opt main_statement statements_opt;
+    
 statements ::=
 	  statement
   	| statements statement;
-    
-statements_opt ::=
-    | statements;
-
 
 // NOTE: Check if block should be present here or not. Block includes curly braces {}.
 // These are for "simple" statements.
@@ -316,14 +302,18 @@ statement_without_trailing_substatement ::=
     | expression_statement
     | assignment_statement
     | print_statement
-    | read_statement;
-  	// | alias_statement
-    // | return_statement;
-  	// | define_struct_statement
-  	// | define_function_statement;
+    | read_statement
+    | alias_statement
+    | variable_declaration_statement
+    | define_struct_statement
+    | define_function_statement;
     
 assignment_statement ::=
       expression assignment_operator expression SEMICOLON;
+
+// NOTE: Check if this is needed. This might mean "i:int := ;" is valid? Need to test.
+empty_statement ::= 
+      SEMICOLON;
 
 print_statement ::= 
       PRINT expression SEMICOLON;
@@ -333,25 +323,26 @@ read_statement ::=
 
 alias_statement ::=
   	  ALIAS type IDENTIFIER SEMICOLON;
-      
-variable_declaration_statements ::=
-      variable_declaration_statements variable_declaration_statement
-    | variable_declaration_statement;
+    
+// variable_declaration_statements ::=
+      // variable_declaration_statements variable_declaration_statement
+    // | variable_declaration_statement;
 
 variable_declaration_statement ::= 
       variable_declaration SEMICOLON;
 
 variable_declaration ::= 
       IDENTIFIER COLON type
-    | IDENTIFIER COLON type EQ expression_list;
+    | IDENTIFIER COLON type EQ variable_initializers;
 
 // Initializers
-// variable_initializer ::=
-      // expression;
-
-expression_list ::=
+variable_initializer ::=
       expression
-    | expression_list COMMA expression;
+    | dict_initializer;
+
+variable_initializers ::=
+      variable_initializer
+    | variable_initializers COMMA variable_initializer;
 
 dict_initializer ::= 
       LBRACE RBRACE
@@ -362,12 +353,15 @@ key_value_pairs ::=
   	| key_value_pairs COMMA key_value_pair;
 
 key_value_pair ::=
-  	  IDENTIFIER COLON expression
-  	| literal COLON expression;
+  	  variable_initializer COLON variable_initializer;
 
 seq_initializer ::=
   	  LBRACK RBRACK
-    | LBRACK expression_list RBRACK;
+    | LBRACK variable_initializers RBRACK;
+  	//| primary_no_new_seq;
+    
+primary_no_new_seq ::=
+      LBRACK variable_initializers RBRACK;
 
 // Control Flow
 if_then_statement ::=
@@ -375,7 +369,7 @@ if_then_statement ::=
 
 if_then_else_statement ::=
       IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
-
+      
 // For loops
 if_then_loop_statement ::=
       IF LPAREN expression RPAREN THEN block_statements_opt break_statement block_statements_opt ENDIF
@@ -386,7 +380,7 @@ if_then_else_loop_statement ::=
     | IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
 
 loop_statement ::=
-      LOOP block_statements_loop ENDLOOP;
+      LOOP block_statements_loop  ENDLOOP;
 
 return_statement ::=
       RETURN expression SEMICOLON
@@ -398,11 +392,17 @@ return_statement ::=
 break_statement ::=
       BREAK expression SEMICOLON
   	| BREAK SEMICOLON;
-    
+
+
 // Expressions
 expression_statement ::=
       expression SEMICOLON;
 
+/*statement_expression ::=
+  		assignment
+    | function_invocation;*/
+
+// TODO: handle A + B + C
 expression ::=
       expression binary_operator subexpression
     | subexpression;
@@ -413,21 +413,32 @@ subexpression ::=
   	| field_access
   	| seq_access
     | seq_initializer
-    | dict_initializer
   	| function_invocation
   	| unary_operator subexpression
+  	// | LPAREN expression binary_operator expression RPAREN;
+    //| expression binary_operator expression
     | LPAREN expression RPAREN;
-    
+
+/*assignment_expression ::=
+  		conditional_expression
+  	| assignment;
+
+assignment ::=
+  		left_hand_side EQ assignment_expression;
+
+left_hand_side ::=
+  		IDENTIFIER
+  	| field_access;*/
+
 field_access ::=
   	  seq_access_lhs DOT IDENTIFIER;
-      
+
 // The left-hand side of an array access.
 // i.e. myVar[3], or myVar[3][2], or myVar.myField[2], or (getVar())[5]
 seq_access_lhs ::=
       IDENTIFIER
     | seq_access
     | field_access
-    | function_invocation
     | LPAREN expression RPAREN;
 
 // NOTE: Identifier OR another array(seq)!
@@ -436,6 +447,15 @@ seq_access ::=
     | seq_access_lhs LBRACK expression COLON expression RBRACK
     | seq_access_lhs LBRACK expression COLON RBRACK
     | seq_access_lhs LBRACK COLON expression RBRACK;
+
+/*conditional_expression ::=
+  		expression AND expression
+  	| expression OR expression;
+
+relational_expression ::=
+  		expression LANGLE expression
+  	| expression LTEQ expression;
+*/
 
 
 // Function Definition
@@ -461,7 +481,10 @@ function_body ::=
 function_datatype_opt ::=
     | COLON type;
 
-// Function invocation  
+// Function invocation
+function_invocation_expression ::=
+  	  function_invocation SEMICOLON;
+  
 function_invocation ::= 
   		QUESTION function_condition QUESTION IDENTIFIER LPAREN function_arguments_opt RPAREN;
 
@@ -496,3 +519,17 @@ struct_fields ::=
 
 struct_field ::= 
   	  IDENTIFIER COLON type; 
+
+// Alias
+alias_declaration ::=
+  	  ALIAS type IDENTIFIER;
+
+
+
+
+
+
+
+
+
+ 
