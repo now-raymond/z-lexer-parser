@@ -122,7 +122,7 @@ nonterminal return_statement;
 nonterminal break_statement;
 
 // Control Flow for Loops
-nonterminal if_then_loop_statement, if_then_else_loop_statement;
+nonterminal if_then_loop_statement, if_then_else_loop_statement, loop_body;
 
 // Expressions
 nonterminal expression, subexpression, expression_statement;
@@ -373,12 +373,15 @@ if_then_else_statement ::=
 
 // For loops
 if_then_loop_statement ::=
-      IF LPAREN expression RPAREN THEN block_body_opt break_statement block_statements_opt ENDIF
-    | IF LPAREN expression RPAREN THEN block_body ENDIF;
+      IF LPAREN expression RPAREN THEN loop_body ENDIF;
 
 if_then_else_loop_statement ::=
-      IF LPAREN expression RPAREN THEN block_body_opt break_statement block_statements_opt ELSE block_body_opt break_statement block_statements_opt ENDIF
-    | IF LPAREN expression RPAREN THEN block_body ELSE block_body ENDIF;
+      IF LPAREN expression RPAREN THEN loop_body ELSE loop_body ENDIF;
+    
+loop_body ::=
+      block_body
+    | block_body break_statement
+    | break_statement;
 
 loop_statement ::=
       LOOP block_body_loop ENDLOOP;
