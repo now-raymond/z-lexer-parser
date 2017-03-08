@@ -131,9 +131,6 @@ SingleCharacter = [a-zA-Z0-9 ] | [\!\"#$%'\(\)\*\+,-\./:;<=>\?@\[\\\]\^_`{\|}~]
   "!="                           { return symbol(sym.NOTEQ); }
   "<="                           { return symbol(sym.LTEQ); }
   
-  // EXTRA OPERATORS
-  ">="                           { return symbol(sym.GTEQ); }
-  
   "+"                            { return symbol(sym.PLUS); }
   "-"                            { return symbol(sym.MINUS); }
   "*"                            { return symbol(sym.MULT); }

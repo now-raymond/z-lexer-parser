@@ -65,9 +65,6 @@ terminal IMPLIES;  // =>
 terminal PLUS, MINUS, MULT, DIV, POF; // +, -, *, /, ^
 terminal EQEQ, NOTEQ, LTEQ;           // =, !=, <= (comparison)
 
-// EXTRA OPERATORS
-terminal GTEQ;
-
 // Language constructs
 terminal EQ;                          // := (assignment)
 terminal IN;                          // 'in' - Dictionary and seq in
@@ -259,9 +256,7 @@ binary_operator ::=
   	| LANGLE
   	| EQEQ
   	| NOTEQ
-  	| LTEQ
-    | GTEQ
-    | RANGLE;
+  	| LTEQ;
     
 assignment_operator ::=
       EQ;
