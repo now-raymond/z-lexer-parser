@@ -1,0 +1,3 @@
+main { 
+  nullVar:int := null;;;;
+};
