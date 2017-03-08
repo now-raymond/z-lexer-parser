@@ -20,8 +20,11 @@ main {
 
 # here we generate
 /# a family #/
+  f:family := m,p,[c1,c2];
   alias seq<char> string2;
+  f:family := m,p,[c1,c2];
   tdef person {name:string, surname:string, age:int};
+  f:family := m,p,[c1,c2];
 
   m:person := "aaaaAAA", "bbBB0_i", 40;
   p:person := "aaabAAA", "bbBB0_i", 35;
