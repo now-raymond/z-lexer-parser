@@ -371,10 +371,10 @@ seq_initializer ::=
 
 // Control Flow
 if_then_statement ::=
-      IF LPAREN expression RPAREN THEN block_statements ENDIF;
+      IF LPAREN expression RPAREN THEN block_body ENDIF;
 
 if_then_else_statement ::=
-      IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
+      IF LPAREN expression RPAREN THEN block_body ELSE block_body ENDIF;
 
 // For loops
 if_then_loop_statement ::=
