@@ -188,6 +188,7 @@ declarations ::=
     
 declaration ::=
       variable_declaration_statement
+    | define_function_statement
     | define_struct_statement
     | alias_statement;
 
