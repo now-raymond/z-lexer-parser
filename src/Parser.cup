@@ -105,11 +105,11 @@ nonterminal unary_operator, binary_operator, assignment_operator;
 
 // Blocks and Statements
 nonterminal block, block_statements_opt, block_statements, block_statement;
-nonterminal block_body;
-nonterminal statement, statements, statement_without_trailing_substatement, statements_opt;
-nonterminal empty_statement, print_statement, read_statement;
+nonterminal block_body, block_body_loop;
+nonterminal statement, statement_without_trailing_substatement;
+nonterminal print_statement, read_statement;
 nonterminal alias_statement;
-nonterminal variable_declaration_statement, variable_declaration_statements;
+nonterminal variable_declaration_statement;
 
 // Blocks & Statements for Loops
 nonterminal block_statements_loop;
@@ -122,7 +122,7 @@ nonterminal return_statement;
 nonterminal break_statement;
 
 // Control Flow for Loops
-nonterminal if_then_loop_statement, if_then_else_loop_statement;
+nonterminal if_then_loop_statement, if_then_else_loop_statement, loop_body;
 
 // Expressions
 nonterminal expression, subexpression, expression_statement;
@@ -188,6 +188,7 @@ declarations ::=
     
 declaration ::=
       variable_declaration_statement
+    | define_function_statement
     | define_struct_statement
     | alias_statement;
 
@@ -270,6 +271,10 @@ block ::=
 block_body ::=
       declarations block_statements
     | block_statements;
+      
+block_body_loop ::=
+      declarations block_statements_loop
+    | block_statements_loop;
 
 // ..statements.. (zero or more)
 block_statements_opt ::= 
@@ -300,14 +305,6 @@ statement_loop ::=
     | if_then_loop_statement
     | if_then_else_loop_statement
     | loop_statement;
-    
-statements ::=
-	  statement
-  	| statements statement;
-    
-statements_opt ::=
-    | statements;
-
 
 // NOTE: Check if block should be present here or not. Block includes curly braces {}.
 // These are for "simple" statements.
@@ -333,10 +330,6 @@ read_statement ::=
 
 alias_statement ::=
   	  ALIAS type IDENTIFIER SEMICOLON;
-      
-variable_declaration_statements ::=
-      variable_declaration_statements variable_declaration_statement
-    | variable_declaration_statement;
 
 variable_declaration_statement ::= 
       variable_declaration SEMICOLON;
@@ -371,22 +364,26 @@ seq_initializer ::=
 
 // Control Flow
 if_then_statement ::=
-      IF LPAREN expression RPAREN THEN block_statements ENDIF;
+      IF LPAREN expression RPAREN THEN block_body ENDIF;
 
 if_then_else_statement ::=
-      IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
+      IF LPAREN expression RPAREN THEN block_body ELSE block_body ENDIF;
 
 // For loops
 if_then_loop_statement ::=
-      IF LPAREN expression RPAREN THEN block_statements_opt break_statement block_statements_opt ENDIF
-    | IF LPAREN expression RPAREN THEN block_statements ENDIF;
+      IF LPAREN expression RPAREN THEN loop_body ENDIF;
 
 if_then_else_loop_statement ::=
-      IF LPAREN expression RPAREN THEN block_statements_opt break_statement block_statements_opt ELSE block_statements_opt break_statement block_statements_opt ENDIF
-    | IF LPAREN expression RPAREN THEN block_statements ELSE block_statements ENDIF;
+      IF LPAREN expression RPAREN THEN loop_body ELSE loop_body ENDIF;
+
+// Not clear if break needs to be the last statement in a loop - we're going to allow it.
+loop_body ::=
+      block_body
+    | block_body break_statement block_statements_opt
+    | break_statement block_statements_opt;
 
 loop_statement ::=
-      LOOP block_statements_loop ENDLOOP;
+      LOOP block_body_loop ENDLOOP;
 
 return_statement ::=
       RETURN expression SEMICOLON

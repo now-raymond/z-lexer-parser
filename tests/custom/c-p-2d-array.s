@@ -6,7 +6,7 @@ main {
   
   books[3][3][6] := 4;
   
-  family.mother.name = "Jane";
+  family.mother.name := "Jane";
   
   print 0;
 };
