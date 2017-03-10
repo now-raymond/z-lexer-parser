@@ -182,13 +182,14 @@ global_declaration ::=
     | define_struct_statement
     | alias_statement;
     
-// declarations ::=
-      // declarations declaration
-    // | declaration;
+declarations ::=
+      declarations declaration
+    | declaration;
     
-// declaration ::=
-      // variable_declaration_statement
-    // ;
+declaration ::=
+      variable_declaration_statement
+    | define_struct_statement
+    | alias_statement;
 
 main_statement ::= 
       MAIN block SEMICOLON;
@@ -314,9 +315,6 @@ statement_without_trailing_substatement ::=
     | expression_statement
     | assignment_statement
     | print_statement
-    | variable_declaration_statement
-    | define_struct_statement
-    | alias_statement
     | read_statement;
   	// | alias_statement
     // | return_statement;
