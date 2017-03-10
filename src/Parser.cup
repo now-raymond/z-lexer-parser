@@ -105,7 +105,7 @@ nonterminal unary_operator, binary_operator, assignment_operator;
 
 // Blocks and Statements
 nonterminal block, block_statements_opt, block_statements, block_statement;
-nonterminal block_body, block_body_loop, block_body_opt;
+nonterminal block_body, block_body_loop;
 nonterminal statement, statement_without_trailing_substatement;
 nonterminal print_statement, read_statement;
 nonterminal alias_statement;
@@ -271,9 +271,6 @@ block ::=
 block_body ::=
       declarations block_statements
     | block_statements;
-      
-block_body_opt ::=
-    | block_body;
       
 block_body_loop ::=
       declarations block_statements_loop
